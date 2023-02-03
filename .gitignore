@@ -1,0 +1,6 @@
+fractio_env/
+scripts/
+build/
+dist/
+runn.spec
+*.deb
