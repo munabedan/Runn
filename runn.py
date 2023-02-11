@@ -1,3 +1,4 @@
+import re
 from pydoc import cli
 from subprocess import call
 from datetime import datetime
@@ -15,9 +16,50 @@ def checkForScriptsDirectory():
         print(datetime.now().strftime(
             "[%H:%M:%S]"), " Using directory ", os.getcwd() + "/scripts")
 
+        listScripts()
+
     elif (Path('scripts').is_dir() == False):
         print(datetime.now().strftime(
             "[%H:%M:%S]"), " No scripts directory found ", )
+
+        # provide user with y/N option to create directory
+        createDirectory = input(
+            datetime.now().strftime("[%H:%M:%S]") + " Create scripts directory? (y/N) ")
+
+        if (createDirectory == "y"):
+            os.mkdir("scripts")
+            print(datetime.now().strftime(
+                "[%H:%M:%S]"), " Created scripts directory ", os.getcwd() + "/scripts")
+
+        elif (createDirectory == "N"):
+            print(datetime.now().strftime(
+                "[%H:%M:%S]"), " No scripts directory found ", )
+
+
+""" create script file in the scripts directory """
+
+
+def createScriptFile():
+
+    script_extension = input(
+        datetime.now().strftime("[%H:%M:%S]") + " Create script file with .py or .sh extension? (py/sh) ")
+
+    if (script_extension == "py"):
+        script_extension = ".py"
+
+    elif (script_extension == "sh"):
+        script_extension = ".sh"
+        
+
+    # ask user for script name
+
+    script_name = input(
+        datetime.now().strftime("[%H:%M:%S]") + " Enter script name: ")
+
+    script_file = open(os.getcwd() + "/scripts" + '/' +
+                       script_name + script_extension, "w+")
+
+    script_file.close()
 
 
 """ list task """
@@ -46,11 +88,12 @@ def listScripts():
 
 def runBashScript(script_name):
 
-    print(datetime.now().strftime("[%H:%M:%S]"), f"Starting script '{script_name}' ...")
+    print(datetime.now().strftime("[%H:%M:%S]"),
+          f"Starting script '{script_name}' ...")
 
     start_time = time.perf_counter_ns()
 
-    with open(os.getcwd() + "/scripts" + '/'+ script_name + '.sh', 'rb') as file:
+    with open(os.getcwd() + "/scripts" + '/' + script_name + '.sh', 'rb') as file:
         script = file.read()
 
     rc = call(script, shell=True)
@@ -66,11 +109,14 @@ def runBashScript(script_name):
 
 def runPythonScript(script_name):
 
-    print(datetime.now().strftime("[%H:%M:%S]"), f"Starting script '{script_name}' ...")
+    print(datetime.now().strftime("[%H:%M:%S]"),
+          f"Starting script '{script_name}' ...")
 
     start_time = time.perf_counter_ns()
+    script_name = "/scripts" + "/" + script_name + ".py"
+    print(script_name)
 
-    exec(open(os.getcwd() + "/scripts" + "/"+ script_name +".py").read())
+    exec(open(os.getcwd() + script_name).read())
 
     duration_time = time.perf_counter_ns() - start_time
 
@@ -80,26 +126,45 @@ def runPythonScript(script_name):
 
 def runScript(script_name):
 
-    script_name, script_extension = os.path.splitext(script_name)
+    directory = Path("scripts")
+    file_name_pattern = "^"+script_name + "\.(txt|sh|py)$"
 
-    if (script_extension == ".py"):
+    matches = file_exists(directory, file_name_pattern)
 
-        runPythonScript(script_name)
+    if matches:
+        print(matches)
+        script_name, script_extension = os.path.splitext(matches)
 
-    elif (script_extension == ".sh"):
+        if (script_extension == ".py"):
 
-        runBashScript(script_name)
+            runPythonScript(script_name)
+
+        elif (script_extension == ".sh"):
+
+            runBashScript(script_name)
+
+    else:
+        print("Script not found")
+
+
+def file_exists(directory, file_name_pattern):
+    regex = re.compile(file_name_pattern)
+    for filename in os.listdir(directory):
+        if regex.match(filename):
+
+            return filename
+    return False
 
 
 """ take cli arguments """
 
 cli_arguments = sys.argv
 
-
-if "--scripts" in cli_arguments:
-    listScripts()
+if "create" in cli_arguments:
+    createScriptFile()
 
 elif (len(cli_arguments) > 1):
+
     runScript(cli_arguments[1])
 
 else:
