@@ -1,4 +1,4 @@
-# Runn - A Python Task Runner
+# Runn - A task runner of sorts
 
 Runn is a powerful and flexible task runner, designed to automate repetitive and time-consuming tasks. It is written in Python, making it easy to use and integrate into your existing workflows.
 
