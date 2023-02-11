@@ -16,7 +16,7 @@ Runn is a powerful and flexible task runner, designed to automate repetitive and
 
 ## Getting Started
 To get started with Runn, follow these steps:
-1. Download the release .deb file here [v0.1.0-alpha](https://github.com/munabedan/Runn/releases/tag/v0.1.0-alpha)
+1. Download the release .deb file here [v0.2.0-alpha](https://github.com/munabedan/Runn/releases/tag/v0.2.0-alpha)
 2. Install the package with apt.
 
 

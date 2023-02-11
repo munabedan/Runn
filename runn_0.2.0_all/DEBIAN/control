@@ -1,0 +1,8 @@
+Package: runn
+Version: 0.2.0
+Architecture: all
+Maintainer: Muna Bedan <munabedan@gmail.com>
+Depends: 
+Homepage: https://github.com/munabedan/Runn
+Description: A task runner of sorts.
+
